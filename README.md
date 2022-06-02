@@ -11,3 +11,4 @@ Run the following:
 
 Specify correct server, user, print server and server image path in `config.json`
 
+Run `node index.js` to start
