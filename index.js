@@ -14,20 +14,19 @@ const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 const printerUrl = config["printerUrl"];
 
 const printImages = (path) => {
-    try {
-        Jimp.read(path, function (err, image) {
-            if (err) {
-                console.log("error converting image", err)
-            } else {
-                const png = "./pngs/" + path + ".png"
-                image.write(png)
-                brother.printPngFile(printerUrl, png, {landscape: false})
+    Jimp.read(path, function (err, image) {
+        if (err) {
+            console.log("error converting image", err)
+        } else {
+                try {
+                    const png = "./pngs/" + path + ".png"
+                    image.write(png)
+                    brother.printPngFile(printerUrl, png, {landscape: false})
+                } catch(error) {
+                    console.log("Printing failed", error)
+                }
             }
         })
-
-    } catch(error) {
-        console.log("Printing failed", e)
-    }
 }
 
 const syncFiles = async () => {
