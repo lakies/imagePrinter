@@ -1,0 +1,17 @@
+{
+  "name": "syncstuff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "brother-label-printer": "0.0.3",
+    "chokidar": "^3.5.3",
+    "jimp": "^0.16.1"
+  }
+}
