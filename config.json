@@ -1,6 +1,6 @@
 {
-    "host": "172.105.86.182",
-    "user": "root",
-    "hostDir": "/root/images",
-    "printerUrl": "http://192.168.178.71:631/ipp/print"
+    "host": "",
+    "user": "",
+    "hostDir": "/home/user/images",
+    "printerUrl": ""
 }
