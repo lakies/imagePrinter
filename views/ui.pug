@@ -1,0 +1,39 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    title Configure printserver
+    link(rel='stylesheet', type='text/css', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+    link(rel='stylesheet', type='text/css', href='style.css')
+
+
+  body
+    div.main
+        form.form-horizontal(method='POST', action='/')
+            fieldset
+                // Text input
+                .form-group
+                    label.col-md-4.control-label(for='textinput') API url
+                    .col-md-4
+                        input#url.form-control.input-md(name='url', type='text', placeholder='API url', value=url)
+                // Text input
+                .form-group
+                    label.col-md-4.control-label(for='textinput') API user
+                    .col-md-4
+                        input#user.form-control.input-md(name='user', type='text', placeholder='API user', value=user)
+                // Text input
+                .form-group
+                    label.col-md-4.control-label(for='textinput') API password
+                    .col-md-4
+                        input#password.form-control.input-md(name='password', type='text', placeholder='API password', value=password)
+                // Select Basic
+                //.form-group
+                    //label.col-md-4.control-label(for='size') Paper size
+                    .//col-md-4
+                        //select#selectbasic.form-control(name='size')
+                            //option(value='696x271|62x29') 62x29 mm
+                // Button
+                .form-group
+                    label.col-md-4.control-label(for='textinput') Save
+                    .col-md-4
+                        button#singlebutton.btn.btn-primary(type='submit', name='singlebutton') Save

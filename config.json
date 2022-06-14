@@ -1,6 +1,5 @@
 {
     "host": "1.1.1.1",
     "user": "user",
-    "hostDir": "/home/user/images",
-    "printerUrl": "1.1.1.1/printer"
+    "hostDir": "/home/user/images"
 }

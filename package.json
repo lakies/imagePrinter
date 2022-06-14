@@ -1,17 +1,30 @@
 {
-  "name": "syncstuff",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "brother-label-printer": "0.0.3",
-    "chokidar": "^3.5.3",
-    "jimp": "^0.16.1"
-  }
+    "name": "printserver",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "ui": "echo ''"
+    },
+    "author": "Magnus Kokk",
+    "license": "ISC",
+    "dependencies": {
+        "aloha-sd": "^1.0.7",
+        "async": "^2.5.0",
+        "body-parser": "^1.18.2",
+        "express": "^4.16.1",
+        "ip": "^1.1.5",
+        "is-reachable": "^2.3.3",
+        "lowdb": "^1.0.0",
+        "md5": "^2.2.1",
+        "ncups": "github:magnuskokk/ncups",
+        "node-rest-client": "^3.1.0",
+        "nodestalker": "^0.1.21",
+        "pug": "^2.0.0-rc.4",
+        "socket.io": "^2.0.3",
+        "socket.io-client": "^2.0.3",
+        "zuzel-printer": "github:magnuskokk/node-printer",
+        "jimp": "^0.16.1",
+        "chokidar": "^3.5.3"
+    }
 }
