@@ -81,9 +81,7 @@ async function pngToBin(printer, pngPath) {
     return new Promise((resolve, reject) => {
         var binPath = pngPath + '.bin';
 
-	var printerName = printer.name.replace(/-\d+$/, ''); 
-
-
+	    var printerName = printer.name
 
         // Create bin from png
         let python = spawn('/usr/bin/python3', ['/home/printserver/.local/bin/brother_ql_create', '--model', printerName, '--label-size', printer.size_mm, pngPath]);
@@ -95,7 +93,6 @@ console.log(printer.name, printer.size_mm, pngPath);
 
         python.stderr.on('data', (data) => 
 		{
-	
             resolve(false);
         });
 
@@ -127,12 +124,20 @@ async function printIdLabel(printer) {
     return print(printer, getRandomString(), pngPath);
 }
 
+function deleteFile(file) {
+    fs.unlinkSync(file)
+}
+
 async function print(printer, jobName, pngPath) {
     return new Promise(async (resolve, reject) => {
-		        console.log(pngPath);
 
         let binPath = await pngToBin(printer, pngPath);
       
+
+        if(!binPath) {
+            console.log("Invalid printer name " + printer.name)
+            reject()
+        }
 
         var printerMachine = new Printer(printer.name);
         let fileBuffer = fs.readFileSync(binPath);
@@ -141,6 +146,11 @@ async function print(printer, jobName, pngPath) {
             t: jobName
         };
 
+        // if(true) {
+        //     resolve(true)
+        //     return
+        // }
+
         var job = printerMachine.printBuffer(fileBuffer, options); //or without options
 
         var wait = setTimeout(() => {
@@ -148,6 +158,7 @@ async function print(printer, jobName, pngPath) {
             job.cancel();
             printerMachine.destroy();
 
+            deleteFile(binPath)
             resolve(null);
         }, 15000);
 
@@ -156,6 +167,7 @@ async function print(printer, jobName, pngPath) {
             printerMachine.destroy();
 
             clearTimeout(wait);
+            deleteFile(binPath)
             resolve(true);
         });
 
@@ -165,6 +177,7 @@ async function print(printer, jobName, pngPath) {
             printerMachine.destroy();
 
             clearTimeout(wait);
+            deleteFile(binPath)
             resolve(false);
         });
     });

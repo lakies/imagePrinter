@@ -9,9 +9,9 @@ apt install -y curl wget python3 python3-pip build-essential libudev-dev beansta
 
 
 # Install nodejs
-curl -sL https://deb.nodesource.com/setup_8.x | bash -
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
-apt-get install -y nodejs
+nvm install 16
 
 npm install -g pm2
 

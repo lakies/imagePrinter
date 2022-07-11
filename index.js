@@ -5,7 +5,6 @@ const FileSync = require('lowdb/adapters/FileSync');
 var Client = require('node-rest-client').Client;
 const async = require('async');
 const { spawn } = require('child_process');
-const fs = require('fs');
 const Api = require('./modules/Api');
 const md5 = require('md5');
 
@@ -17,7 +16,8 @@ var urlencodedParser = bodyParser.urlencoded({ extended: true });
 const Jimp = require("jimp")
 const chokidar = require('chokidar');
 const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+const { exec } = require("child_process");
+// const exec = util.promisify(require('child_process').exec);
 const fs = require('fs');
 
 const addPrinters = async () => {
@@ -123,28 +123,32 @@ const sync = async () => {
     });
 }
 
-const images = []
+const images = new Set()
 const watcher = chokidar.watch('images', {persistent: true, ignoreInitial: true});
 
 let watcherSetup = false
 
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+const target = `${config["user"]}@${config["host"]}`
 
 const syncFiles = async () => {
     try {
-        await exec(`rsync -auz ${config["user"]}@${config["host"]}:${config["hostDir"]} .`)
+        exec(`rsync -auz ${target}:${config["hostDir"]} ./images`)
 
         if(!watcherSetup) {
             watcher
-                .on('add', path => images.push(path))
+                .on('add', path => {
+                    console.log(path)
+                    if (path.endsWith(".jpg") || path.endsWith(".jpeg")) {
+                        images.add(path)
+                    }
+                })
                 .on('error', function(error) {console.error('Error happened', error);});
             watcherSetup = true
         }
     } catch (error) {
         console.log("Image fetching failed", error)
     }
-
-    setTimeout(syncFiles, 250);
 }
 
 
@@ -157,64 +161,34 @@ const getPrinterCount = () => {
         .value();
 }
 
+// const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
 const printImages = async () => {
-    // let options = {
-    //     "force new connection": true,
-    //     "reconnectionAttempts": "Infinity",
-    //     "timeout": 10000,
-    //     "transports": ["websocket"],
-    //     "path": "/socket.io",
-    //     "secure": true,
-    //     "rejectUnauthorized": false,
-    //     "forceNew": true
-    // };
-
-
-    // let socketUrl = await Api.getSocketUrl();
-
-    // console.log('Socket Url: ', socketUrl);
-
-    // let mbHost = Api.getMbHost();
-
-    // console.log('mbHost: ', mbHost);
-
-    // let socket = require('socket.io-client')(socketUrl + '/' + mbHost, options);
-
-    // let installSocket = require('socket.io-client')(socketUrl + '/setup-printers', options);
-
-    // let printerCount = getPrinterCount();
-
-    // // First add our domain to socket server
-    // installSocket.on('connect', () => {
-    //     installSocket.emit('add', {
-    //         name: mbHost,
-    //         printerCount: printerCount
-    //     }, () => {
-    //         installSocket.disconnect();
-    //     });
-    // });
-
-    // socket.on('sync', async () => {
-    //     console.log('Sync called');
-    //     await sync();
-    //     process.exit(0);
-    // });
-
-    const imagePath = images.pop()
+    console.log(new Date().toISOString() + " fetching start")
+    await syncFiles()
+    console.log(new Date().toISOString() + " fetching end")
+    const imagePath = images.values().next().value
 
     if (imagePath) {
-        console.log('Printing image: ' + imagePath);
-        const printer = MPrint.getPrinters()[0].value();    
+        images.delete(imagePath)
+        // await delay(2000)
+        console.log(new Date().toISOString() + ' Printing image: ' + imagePath);
+        const printer = MPrint.getPrinters().value()[0];    
 
-        Jimp.read(imagePath, function (err, image) {
+        Jimp.read(imagePath, async function (err, image) {
             if (err) {
                 console.log("error converting image", err)
             } else {
                 try {
-                    const png = "./pngs/" + path + ".png"
-                    image.write(png)
+                    const png = "./pngs/" + imagePath + ".png"
+                    console.log("creating png " + png)
+                    await image
+                        .resize(306, 991)
+                        .writeAsync(png)
+
+                    console.log("printing image " + png)
                     
-                    let printResult = await MPrint.print(printer, path, png);
+                    let printResult = await MPrint.print(printer, imagePath, png);
 
                     switch (printResult) {
                         case null: // timeout
@@ -229,10 +203,13 @@ const printImages = async () => {
                             console.log('Job error:');
                             break;
                     }
-
                     
                     fs.unlinkSync(png);
+                    fs.unlinkSync(imagePath);
                 
+                    const remoteFile = imagePath.split("/").splice(2).join("/")
+
+                    exec(`ssh ${target} 'rm -rf ${config["hostDir"]}/${remoteFile}'`)
                 } catch(error) {
                     console.log("Printing failed", error)
                 }
@@ -241,7 +218,7 @@ const printImages = async () => {
             setTimeout(printImages, 250);
         })
     } else {
-        setTimeout(printImages, 250);
+        console.log(setTimeout(printImages, 250));
     }
     // socket.on('update', async () => {
     //     await (async () => {
@@ -311,16 +288,15 @@ const startUi = () => {
         await addPrinters();
         await updatePrinters();
 
-        startUi();
-        syncFiles();
+        // startUi();
 
         printImages();
 
         let minutes = 1;
         let interval = minutes * 60 * 1000;
-        setInterval(async () => {
-            await updatePrinters();
-        }, interval);
+        // setInterval(async () => {
+        //     await updatePrinters();
+        // }, interval);
     } catch (err) {
         // PM2 automatically this script restarts after that
         process.exit(0);

@@ -1,19 +1,9 @@
 {
   "printers": [
     {
-      "id": 1,
-      "name_unique": "6ee4134997d68fdaac97ed1cd806a759",
-      "name": "QL-800",
-      "uri": "usb://dev/usb/lp0",
-      "type": "usb",
-      "size_px": "306x991",
-      "size_mm": "29x90",
-      "status": "online"
-    },
-    {
-      "id": 2,
-      "name_unique": "e2d0fe57a7bccf944895bc03d6bcfe36",
-      "name": "QL-820NWB-2",
+      "id": 6,
+      "name_unique": "266828ea4dc84dd99fd7f69d3c1ebee0",
+      "name": "QL-820NWB",
       "uri": "usb://Brother/QL-820NWB?serial=000K7Z233854",
       "type": "usb",
       "size_px": "306x991",
@@ -21,5 +11,5 @@
       "status": "online"
     }
   ],
-  "next_id": 3
+  "next_id": 7
 }
