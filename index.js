@@ -161,12 +161,10 @@ const getPrinterCount = () => {
         .value();
 }
 
-// const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const printImages = async () => {
-    console.log(new Date().toISOString() + " fetching start")
     await syncFiles()
-    console.log(new Date().toISOString() + " fetching end")
     const imagePath = images.values().next().value
 
     if (imagePath) {
@@ -177,7 +175,14 @@ const printImages = async () => {
 
         Jimp.read(imagePath, async function (err, image) {
             if (err) {
-                console.log("error converting image", err)
+                if (err.message.startsWith("Could not find MIME")) {
+                    images.add(imagePath)
+                    console.log("Image not ready yet, retrying")
+                    await delay(200)
+                } else {
+                    console.log("error converting image", err)
+                }
+
             } else {
                 try {
                     const png = "./pngs/" + imagePath + ".png"
@@ -205,11 +210,13 @@ const printImages = async () => {
                     }
                     
                     fs.unlinkSync(png);
-                    fs.unlinkSync(imagePath);
+                    // fs.unlinkSync(imagePath);
+                    exec(`rm -rf ${imagePath}`)
                 
                     const remoteFile = imagePath.split("/").splice(2).join("/")
-
-                    exec(`ssh ${target} 'rm -rf ${config["hostDir"]}/${remoteFile}'`)
+                    const command = `ssh ${target} 'rm -rf ${config["hostDir"]}/${remoteFile}'`
+                    console.log(command)
+                    exec(command)
                 } catch(error) {
                     console.log("Printing failed", error)
                 }
@@ -218,7 +225,7 @@ const printImages = async () => {
             setTimeout(printImages, 250);
         })
     } else {
-        console.log(setTimeout(printImages, 250));
+        setTimeout(printImages, 250);
     }
     // socket.on('update', async () => {
     //     await (async () => {

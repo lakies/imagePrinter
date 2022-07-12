@@ -84,8 +84,8 @@ async function pngToBin(printer, pngPath) {
 	    var printerName = printer.name
 
         // Create bin from png
-        let python = spawn('/usr/bin/python3', ['/home/printserver/.local/bin/brother_ql_create', '--model', printerName, '--label-size', printer.size_mm, pngPath]);
-console.log(printer.name, printer.size_mm, pngPath);
+        let python = spawn('/usr/bin/python3', ['/home/adrian/.local/bin/brother_ql_create', '--model', printerName, '--label-size', printer.size_mm, pngPath]);
+        console.log(printer.name, printer.size_mm, pngPath);
         let binStream = fs.createWriteStream(binPath, { flags: 'a' });
 
         // Write the bin file
@@ -142,14 +142,15 @@ async function print(printer, jobName, pngPath) {
         var printerMachine = new Printer(printer.name);
         let fileBuffer = fs.readFileSync(binPath);
 
+        printerMachine.destroy();
         let options = {
             t: jobName
         };
 
-        // if(true) {
-        //     resolve(true)
-        //     return
-        // }
+        if(true) {
+            resolve(true)
+            return
+        }
 
         var job = printerMachine.printBuffer(fileBuffer, options); //or without options
 
