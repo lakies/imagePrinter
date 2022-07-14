@@ -3,8 +3,7 @@
 set -e
 
 DRIVERS=(
-        "http://download.brother.com/welcome/dlfp100347/ql820nwbcupswrapper-1.1.4-0.i386.deb"
-        "http://download.brother.com/welcome/dlfp100339/ql800cupswrapper-1.1.4-0.i386.deb"
+        "https://download.brother.com/welcome/dlfp100345/ql820nwbpdrv-3.1.5-0.i386.deb"
 )
 
 #TODO check if installed

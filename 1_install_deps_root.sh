@@ -5,7 +5,7 @@ apt update
 
 
 # Deps
-apt install -y curl wget python3 python3-pip build-essential libudev-dev beanstalkd iceweasel nodejs sudo
+apt install -y curl wget python3 python3-pip build-essential libudev-dev
 
 
 # Install nodejs
