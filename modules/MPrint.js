@@ -84,7 +84,7 @@ async function pngToBin(printer, pngPath) {
 	    var printerName = printer.name
 
         // Create bin from png
-        let python = spawn('/usr/bin/python3', ['/home/adrian/.local/bin/brother_ql_create', '--model', printerName, '--label-size', printer.size_mm, pngPath]);
+        let python = spawn('/usr/bin/python3', ['/home/printserver/.local/bin/brother_ql_create', '--model', printerName, '--label-size', printer.size_mm, pngPath]);
         console.log(printer.name, printer.size_mm, pngPath);
         let binStream = fs.createWriteStream(binPath, { flags: 'a' });
 
@@ -131,23 +131,24 @@ function deleteFile(file) {
 async function print(printer, jobName, pngPath) {
     return new Promise(async (resolve, reject) => {
 
-        let binPath = await pngToBin(printer, pngPath);
+        // let binPath = await pngToBin(printer, pngPath);
       
 
-        if(!binPath) {
-            console.log("Invalid printer name " + printer.name)
-            reject()
-        }
+        // if(!binPath) {
+        //     console.log("Invalid printer name " + printer.name)
+        //     reject()
+        // }
 
         var printerMachine = new Printer(printer.name);
-        let fileBuffer = fs.readFileSync(binPath);
+        let fileBuffer = fs.readFileSync(pngPath);
 
-        printerMachine.destroy();
+    
         let options = {
             t: jobName
         };
 
         if(true) {
+            printerMachine.destroy()
             resolve(true)
             return
         }
@@ -159,7 +160,6 @@ async function print(printer, jobName, pngPath) {
             job.cancel();
             printerMachine.destroy();
 
-            deleteFile(binPath)
             resolve(null);
         }, 15000);
 
@@ -168,7 +168,6 @@ async function print(printer, jobName, pngPath) {
             printerMachine.destroy();
 
             clearTimeout(wait);
-            deleteFile(binPath)
             resolve(true);
         });
 
@@ -178,7 +177,6 @@ async function print(printer, jobName, pngPath) {
             printerMachine.destroy();
 
             clearTimeout(wait);
-            deleteFile(binPath)
             resolve(false);
         });
     });

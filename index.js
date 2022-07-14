@@ -185,15 +185,15 @@ const printImages = async () => {
 
             } else {
                 try {
-                    const png = "./pngs/" + imagePath + ".png"
-                    console.log("creating png " + png)
+                    const jpg = "./pngs/" + imagePath
+                    console.log(new Date().toISOString() + " creating jpg " + jpg)
                     await image
                         .resize(306, 991)
-                        .writeAsync(png)
+                        .writeAsync(jpg)
 
-                    console.log("printing image " + png)
-                    
-                    let printResult = await MPrint.print(printer, imagePath, png);
+                    console.log(new Date().toISOString() + " printing image " + jpg)
+
+                    let printResult = await MPrint.print(printer, imagePath, jpg);
 
                     switch (printResult) {
                         case null: // timeout
@@ -209,13 +209,12 @@ const printImages = async () => {
                             break;
                     }
                     
-                    fs.unlinkSync(png);
-                    // fs.unlinkSync(imagePath);
-                    exec(`rm -rf ${imagePath}`)
+                    fs.unlinkSync(jpg);
+                    fs.unlinkSync(imagePath);
                 
                     const remoteFile = imagePath.split("/").splice(2).join("/")
                     const command = `ssh ${target} 'rm -rf ${config["hostDir"]}/${remoteFile}'`
-                    console.log(command)
+                    // console.log(command)
                     exec(command)
                 } catch(error) {
                     console.log("Printing failed", error)

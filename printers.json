@@ -1,15 +1,15 @@
 {
   "printers": [
     {
-      "id": 6,
-      "name_unique": "266828ea4dc84dd99fd7f69d3c1ebee0",
-      "name": "QL-820NWB",
+      "id": 7,
+      "name_unique": "0729e824cbb4a9d0ec4f57a61c482bd0",
+      "name": "QL820NWB",
       "uri": "usb://Brother/QL-820NWB?serial=000K7Z233854",
       "type": "usb",
       "size_px": "306x991",
       "size_mm": "29x90",
-      "status": "offline"
+      "status": "online"
     }
   ],
-  "next_id": 7
+  "next_id": 8
 }
