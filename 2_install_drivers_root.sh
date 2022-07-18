@@ -4,6 +4,7 @@ set -e
 
 DRIVERS=(
         "https://download.brother.com/welcome/dlfp100345/ql820nwbpdrv-3.1.5-0.i386.deb"
+        "https://download.brother.com/welcome/dlfp100337/ql800pdrv-3.1.5-0.i386.deb"
 )
 
 #TODO check if installed
